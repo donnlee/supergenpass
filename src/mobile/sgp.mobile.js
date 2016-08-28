@@ -243,10 +243,10 @@ var populateGeneratedPassword = function (generatedPassword) {
   $el.Output.text(generatedPassword);
   $el.Result.addClass('Offer').removeClass('Reveal');
   shortcut.add('Ctrl+H', toggleGeneratedPassword);
-  donnCopyToClipboard();
+  copyToClipboard(null);
 };
 
-var donnCopyToClipboard = function() {
+var copyToClipboard = function(e) {
   var range = document.createRange();
   var selection = window.getSelection();
   var success = false;
@@ -262,11 +262,13 @@ var donnCopyToClipboard = function() {
   selection.removeAllRanges();
 
   if (success) {
-    console.log('donn: success.');
-    //showButtonSuccess(e);
-    $el.Result.removeClass('Reveal');
-    return;
+    if (e) {
+      showButtonSuccess(e);
+      $el.Result.removeClass('Reveal');
+    }
+    return true;
   }
+  return false;
 };
 
 var toggleGeneratedPassword = function () {
@@ -362,27 +364,9 @@ if (!('placeholder' in document.createElement('input'))) {
 // Copy to clipboard if possible.
 // https://developers.google.com/web/updates/2015/04/cut-and-copy-commands?hl=en
 $el.CopyButton.on('click', function (e) {
-  var range = document.createRange();
-  var selection = window.getSelection();
-  var success = false;
-
-  range.selectNodeContents($el.Output.get(0));
-  selection.removeAllRanges();
-  selection.addRange(range);
-
-  try {
-    success = document.execCommand('copy');
-  } catch (err) {}
-
-  selection.removeAllRanges();
-
-  if (success) {
-    showButtonSuccess(e);
-    $el.Result.removeClass('Reveal');
-    return;
+  if (!copyToClipboard(e)) {
+    $el.CopyButton.hide();
   }
-
-  $el.CopyButton.hide();
 });
 
 // Bind to interaction events.
