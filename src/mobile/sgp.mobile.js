@@ -243,6 +243,30 @@ var populateGeneratedPassword = function (generatedPassword) {
   $el.Output.text(generatedPassword);
   $el.Result.addClass('Offer').removeClass('Reveal');
   shortcut.add('Ctrl+H', toggleGeneratedPassword);
+  donnCopyToClipboard();
+};
+
+var donnCopyToClipboard = function() {
+  var range = document.createRange();
+  var selection = window.getSelection();
+  var success = false;
+
+  range.selectNodeContents($el.Output.get(0));
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  try {
+    success = document.execCommand('copy');
+  } catch (err) {}
+
+  selection.removeAllRanges();
+
+  if (success) {
+    console.log('donn: success.');
+    //showButtonSuccess(e);
+    $el.Result.removeClass('Reveal');
+    return;
+  }
 };
 
 var toggleGeneratedPassword = function () {
